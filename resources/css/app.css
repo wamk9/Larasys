@@ -1,0 +1,28 @@
+/*@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';*/
+
+
+#login-presentation
+{
+  background-color: #1F2937;
+  color: #fafafa
+}
+
+#logo-login
+{
+	display: inline-block;
+	width: 100%;
+	text-align: center;
+}
+
+#logo-login svg
+{
+  height: 100px;
+}
+
+#logo-dashboard svg
+{
+  height: 50px;
+  display: block;
+}
