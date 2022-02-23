@@ -1,4 +1,4 @@
-@props(['align' => 'right', 'width' => '48', 'contentClasses' => 'py-1 bg-white'])
+@props(['class' => '', 'align' => 'right', 'width' => '48', 'contentClasses' => 'py-1 bg-white'])
 
 @php
 switch ($align) {
@@ -21,7 +21,24 @@ switch ($width) {
 }
 @endphp
 
-<div class="relative" x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
+<li class="nav-item dropdown {{ $class }}">
+	<a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle " href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+		{{ $trigger }}
+	</a>
+	
+	<ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="navbarDropdown">
+		<li>
+			{{ $content }}
+		</li>
+	</ul>
+</ul>
+
+
+
+
+
+
+<!--<div class="relative" x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
     <div @click="open = ! open">
         {{ $trigger }}
     </div>
@@ -37,7 +54,8 @@ switch ($width) {
             style="display: none;"
             @click="open = false">
         <div class="rounded-md ring-1 ring-black ring-opacity-5 {{ $contentClasses }}">
-            {{ $content }}
+            
         </div>
     </div>
 </div>
+-->
