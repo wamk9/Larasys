@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Web;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,16 +17,28 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
+});
+
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/clientes', function () {
-    return view('clientes');
-})->middleware(['auth'])->name('clientes');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-Route::get('/orcamentos', function () {
-    return view('orcamentos');
-})->middleware(['auth'])->name('orcamentos');
+    Route::get('/material', [Web\MaterialController::class, 'page'])->name('material.page');
+    Route::get('/stock', [Web\StockController::class, 'page'])->name('stock.page');
+    Route::get('/order', [Web\OrderController::class, 'page'])->name('order.page');
+    Route::get('/equipment', [Web\EquipmentController::class, 'page'])->name('equipment.page');
+});
 
 require __DIR__.'/auth.php';
