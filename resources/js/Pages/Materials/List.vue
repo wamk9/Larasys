@@ -11,6 +11,7 @@ import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net';
 import 'datatables.net-select';
 import 'datatables.net-responsive';
+import languageBR from 'datatables.net-plugins/i18n/pt-BR.mjs';
 import MaterialDistributions from '@/Pages/MaterialDistributions/List.vue';
 DataTable.use(DataTablesCore);
 
@@ -75,6 +76,7 @@ export default {
     created() {
         const self = this;
         this.tableOptions = {
+                language: languageBR,
                 order: [[ 0, 'desc' ]],
                 aoColumns: [
                     {bSorteable: true},
@@ -104,7 +106,10 @@ export default {
                         targets: [ 3 ],
                         data: 'updated_at',
                         title: 'Última Atualização',
-                        type: 'date'
+                        type: 'date',
+                        render: (data, type, row, meta) => {
+                            return new Date(data).toLocaleString();
+                        },
                     },
                     {
                         data: null,

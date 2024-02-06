@@ -2,6 +2,7 @@
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import SystemMethods from '@/Helpers/General/SystemMethods';
 </script>
 
 <template>
@@ -107,9 +108,9 @@ export default {
                 name: this.form.name,
                 reference_code: this.form.reference_code,
                 price: this.form.price,
-                bought_at: this.form.bought_at,
+                bought_at: SystemMethods.dateToDbFormat(this.form.bought_at),
                 depreciation: this.form.depreciation,
-                max_date_return_value: this.form.max_date_return_value,
+                max_date_return_value: SystemMethods.dateToDbFormat(this.form.max_date_return_value),
                 return_value: this.form.return_value,
                 use_value: this.form.use_value,
                 watts_consume: this.form.watts_consume,

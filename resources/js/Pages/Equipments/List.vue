@@ -15,7 +15,7 @@ DataTable.use(DataTablesCore);
 
 <template>
     <Modal :show="showSaveModal" :closeable="true" @close="closeSaveModal">
-        <EquipmentSave v-model:show="showSaveModal" v-model:item="equipamentSelected" :companyId="companyId" @updateDatabase="updateDatabase"/>
+        <EquipmentSave v-model:show="showSaveModal" :item="equipamentSelected" :companyId="companyId" @updateDatabase="updateDatabase"/>
     </Modal>
 
     <Modal :show="showDeleteModal" :closeable="true" @close="closeDeleteModal">

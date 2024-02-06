@@ -2,6 +2,7 @@
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import SelectInput from '@/Components/SelectInput.vue';
 </script>
 
 <template>
@@ -24,6 +25,9 @@ import TextInput from '@/Components/TextInput.vue';
 
                 <InputLabel class="mt-3">Descrição do material</InputLabel>
                 <TextInput v-model="form.description" style="width: 100%"/>
+
+                <InputLabel class="mt-3">Código de referência</InputLabel>
+                <SelectInput v-model="form.material_category_id" :items="materialCategoryItems" style="width: 100%"/>
 
                 <hr class="my-3" style="border-color: #343e4e;">
                 <div class="text-right" style="">
@@ -59,8 +63,10 @@ export default {
                 name: '',
                 unit_of_measurement: '',
                 reference_code: '',
-                description: ''
+                description: '',
+                material_category_id: ''
             },
+            materialCategoryItems: []
         };
     },
     methods: {
@@ -73,6 +79,7 @@ export default {
             this.form.reference_code = this.item.reference_code;
             this.form.unit_of_measurement = this.item.unit_of_measurement;
             this.form.description = this.item.description;
+            this.form.material_category_id = this.item.material_category_id;
         },
         saveMaterial() {
             const params = {
@@ -82,6 +89,7 @@ export default {
                 unit_of_measurement: this.form.unit_of_measurement,
                 reference_code: this.form.reference_code,
                 description: this.form.description,
+                material_category_id: this.form.material_category_id,
             }
             const url = !!this.form.id ? route('api.material.update') : route('api.material.create');
             const method = !!this.form.id ? 'PUT' : 'POST';
@@ -100,6 +108,27 @@ export default {
                 this.$emit('update:show', false)
             })
         },
+        getMaterialCategories() {
+            const params = {
+                company_id: 1,
+            };
+
+            axios.get(route('api.material-category.list'), {
+                params: params,
+                headers: {
+                    'Authorization': 'Bearer ' + this.$page.props.auth.token,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => {
+                this.materialCategoryItems = res.data.message.map((result) => {
+                    return {
+                        value: result.id,
+                        text: result.name,
+                    }
+                });
+            });
+        },
     },
     computed: {
         modalTitle(){
@@ -107,6 +136,7 @@ export default {
         },
     },
     created() {
+        this.getMaterialCategories();
         this.fillForm();
     },
 }

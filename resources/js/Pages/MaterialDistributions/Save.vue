@@ -2,19 +2,13 @@
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import SystemMethods from '@/Helpers/General/SystemMethods';
 import { Head, router } from '@inertiajs/vue3';
 
 const show = defineModel('show', {
     type: Boolean,
     required: true,
 });
-
-const item = defineModel('item', {
-    type: Object,
-    default: () => {},
-    required: true,
-});
-
 
 const props = defineProps({
     companyId: {
@@ -25,6 +19,10 @@ const props = defineProps({
         type: [String, Number],
         required: true,
     },
+    item: {
+        type: Object,
+        required: true,
+    }
 });
 </script>
 
@@ -37,6 +35,9 @@ const props = defineProps({
                 </h2>
                 <hr class="my-3" style="border-color: #343e4e;">
 
+                <InputLabel class="mt-3">Código de referência</InputLabel>
+                <TextInput v-model="form.reference_code" style="width: 100%"/>
+
                 <InputLabel class="mt-3">Quantidade adquirida</InputLabel>
                 <TextInput v-model="form.quantity_bought" style="width: 100%"/>
 
@@ -46,7 +47,7 @@ const props = defineProps({
                 <InputLabel class="mt-3">Adquirido em</InputLabel>
                 <TextInput v-model="form.bought_at" style="width: 100%"/>
 
-                <InputLabel class="mt-3">Descrição</InputLabel>
+                <InputLabel class="mt-3">Valor</InputLabel>
                 <TextInput v-model="form.price" style="width: 100%"/>
 
                 <InputLabel class="mt-3">Descrição</InputLabel>
@@ -68,6 +69,7 @@ export default {
         return {
             form: {
                 id: '',
+                reference_code: '',
                 quantity_bought: '',
                 quantity_used: '',
                 price: '',
@@ -76,16 +78,30 @@ export default {
             }
         };
     },
+    created() {
+        if (!!this.item.id)
+            this.fillForm();
+    },
     methods: {
+        fillForm() {
+            this.form.id = this.item.id;
+            this.form.reference_code = this.item.reference_code;
+            this.form.quantity_bought = this.item.quantity_bought;
+            this.form.quantity_used = this.item.quantity_used;
+            this.form.price = this.item.price;
+            this.form.bought_at = new Date(this.item.bought_at + 'T00:00:00').toLocaleDateString()
+            this.form.description = this.item.description;
+        },
         saveMaterialDistribution() {
             const params = {
-                id: this.materialId,
+                id: this.form.id,
                 company_id: this.companyId,
+                reference_code: this.form.reference_code,
                 material_id: this.materialId,
                 quantity_bought: this.form.quantity_bought,
                 quantity_used: this.form.quantity_used,
                 price: this.form.price,
-                bought_at: this.form.bought_at,
+                bought_at: SystemMethods.dateToDbFormat(this.form.bought_at),
                 description: this.form.description,
             }
             const url = !!this.form.id ? route('api.material-distribution.update') : route('api.material-distribution.create');

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->integer('equipment_id')->unsigned();
-            $table->integer('order_id')->unsigned();
+            $table->bigInteger('equipment_id')->unsigned();
+            $table->bigInteger('order_id')->unsigned();
             $table->integer('minutes_in_use')->unsigned();
 
             $table->foreign('equipment_id')->references('id')->on('equipments');

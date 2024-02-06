@@ -3,8 +3,8 @@ import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import EquipmentSave from '@/Pages/Equipments/Save.vue'
-import EquipmentDelete from '@/Pages/Equipments/Delete.vue';
+import StockSave from '@/Pages/Stocks/Save.vue'
+import StockDelete from '@/Pages/Stocks/Delete.vue';
 import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net';
 import 'datatables.net-select';
@@ -15,19 +15,19 @@ DataTable.use(DataTablesCore);
 
 <template>
     <Modal :show="showSaveModal" :closeable="true" @close="closeSaveModal">
-        <EquipmentSave v-model:show="showSaveModal" v-model:item="equipamentSelected" :companyId="companyId" @updateDatabase="updateDatabase"/>
+        <StockSave v-model:show="showSaveModal" v-model:item="stockSelected" :companyId="companyId" @updateDatabase="updateDatabase"/>
     </Modal>
 
     <Modal :show="showDeleteModal" :closeable="true" @close="closeDeleteModal">
-        <EquipmentDelete v-model:show="showDeleteModal" :item="equipamentSelected" :companyId="companyId" @updateDatabase="updateDatabase"/>
+        <StockDelete v-model:show="showDeleteModal" :item="stockSelected" :companyId="companyId" @updateDatabase="updateDatabase"/>
     </Modal>
 
-    <Head title="Equipaments" />
+    <Head title="Stocks" />
 
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                Equipamentos
+                Estoque
                 <PrimaryButton style="float: right" @click="openSaveModal('')">Adicionar</PrimaryButton>
             </h2>
         </template>
@@ -51,7 +51,7 @@ export default {
             tableOptions: {},
             tableItems: [],
             companyId: '1',
-            equipamentId: '',
+            stockId: '',
             tableItems: [],
             showSaveModal: false,
             showDeleteModal: false,
@@ -135,8 +135,8 @@ export default {
                 this.tableItems = res.data.message;
             });
         },
-        openSaveModal(equipamentId) {
-            if (!equipamentId) {
+        openSaveModal(stockId) {
+            if (!stockId) {
                 this.data = {
                     id: '',
                     name: '',
@@ -151,14 +151,14 @@ export default {
                 };
             }
 
-            this.equipamentId = equipamentId;
+            this.stockId = stockId;
             this.showSaveModal = true;
         },
         closeSaveModal() {
             this.showSaveModal = false;
         },
-        openDeleteModal(equipamentId) {
-            this.equipamentId = equipamentId;
+        openDeleteModal(stockId) {
+            this.stockId = stockId;
             this.showDeleteModal = true;
         },
         closeDeleteModal() {
@@ -166,8 +166,8 @@ export default {
         },
     },
     computed: {
-        equipamentSelected() {
-            const equipamentEmpty = {
+        stockSelected() {
+            const stockEmpty = {
                 id: '',
                 name: '',
                 reference_code: '',
@@ -180,8 +180,8 @@ export default {
                 watts_consume: '',
             }
 
-            const equipament = this.tableItems.find((obj) => obj.id == this.equipamentId );
-            return !!equipament ? equipament : equipamentEmpty;
+            const stock = this.tableItems.find((obj) => obj.id == this.stockId );
+            return !!stock ? stock : stockEmpty;
         }
      },
 }

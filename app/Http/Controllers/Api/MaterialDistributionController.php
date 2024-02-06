@@ -15,6 +15,7 @@ class MaterialDistributionController extends Controller
             $dataGetted = $request->only([
                 'material_id',
                 'company_id',
+                'reference_code',
                 'quantity_bought',
                 'quantity_used',
                 'price',
@@ -44,6 +45,7 @@ class MaterialDistributionController extends Controller
         {
             $dataGetted = $request->only([
                 'id',
+                'reference_code',
                 'material_id',
                 'company_id',
                 'quantity_bought',

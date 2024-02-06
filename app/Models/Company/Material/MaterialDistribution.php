@@ -12,6 +12,7 @@ class MaterialDistribution extends Model
     protected $fillable = [
         'material_id',
         'company_id',
+        'reference_code',
         'quantity_bought',
         'quantity_used',
         'price',

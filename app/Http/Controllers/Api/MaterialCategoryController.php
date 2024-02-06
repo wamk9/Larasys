@@ -2,44 +2,38 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Company\Material\Material;
-use App\Models\Company\Material\MaterialDistribution;
-use Illuminate\Support\Facades\Redis;
+use App\Models\Company\Material\MaterialCategory;
+use Illuminate\Http\Request;
 
-class MaterialController extends Controller
+class MaterialCategoryController extends Controller
 {
     public function create(Request $request)
     {
         try
         {
             $dataGetted = $request->only([
-                'reference_code',
-                'company_id',
                 'name',
-                'description',
-                'unit_of_measurement',
-                'material_category_id',
+                'company_id',
             ]);
 
-            $material = Material::where([
-                ['reference_code', $dataGetted['reference_code']],
+            $materialCategory = MaterialCategory::where([
+                ['name', $dataGetted['name']],
                 ['company_id', $dataGetted['company_id']]
             ])->first();
 
 
-            if(!is_null($material))
+            if(!is_null($materialCategory))
             {
                 return response()->json([
                     'status' => false,
                     'message' => 'validation error',
-                    'errors' => 'Reference code exists in this company.'
+                    'errors' => 'Category name exists in this company.'
                 ], 401);
             }
 
-            $material = Material::create($dataGetted);
-            $material->save();
+            $materialCategory = MaterialCategory::create($dataGetted);
+            $materialCategory->save();
 
             return response()->json([
                 'message' => 'success'
@@ -60,28 +54,24 @@ class MaterialController extends Controller
         {
             $dataGetted = $request->only([
                 'id',
-                'reference_code',
-                'company_id',
                 'name',
-                'description',
-                'unit_of_measurement',
-                'material_category_id',
+                'company_id'
             ]);
 
-            $material = Material::where([
+            $materialCategory = MaterialCategory::where([
                 ['id', $dataGetted['id']],
                 ['company_id', $dataGetted['company_id']]
             ]);
 
-            if(!$material)
+            if(!$materialCategory)
             {
                 return response()->json([
                     'status' => false,
                     'message' => 'validation error',
-                    'errors' => 'Material don\'t exists.'
+                    'errors' => 'Material category don\'t exists.'
                 ], 401);
             }
-            $material->update($dataGetted);
+            $materialCategory->update($dataGetted);
 
             return response()->json([
                 'message' => 'success'
@@ -105,30 +95,30 @@ class MaterialController extends Controller
                 'company_id'
             ]);
 
-            $material = Material::where([
+            $materialCategory = MaterialCategory::where([
                 ['id', $dataGetted['id']],
                 ['company_id', $dataGetted['company_id']]
             ])->first();
 
-            if(!$material)
+            if(!$materialCategory)
             {
                 return response()->json([
                     'status' => false,
                     'message' => 'validation error',
-                    'errors' => 'Material don\'t exists.'
+                    'errors' => 'Material category don\'t exists.'
                 ], 401);
             }
 
-            if ($material->distributions->count() > 0)
+            if ($materialCategory->materials->count() > 0)
             {
                 return response()->json([
                     'status' => false,
                     'message' => 'validation error',
-                    'errors' => 'Material has one or more distributions.'
+                    'errors' => 'Material category has one or more materials.'
                 ], 401);
             }
 
-            $material->delete();
+            $materialCategory->delete();
 
             return response()->json([
                 'message' => 'success'
@@ -149,24 +139,18 @@ class MaterialController extends Controller
         {
             $dataGetted = $request->only([
                 'company_id',
-                'material_category_id',
             ]);
 
-            $where = [
-                ['materials.company_id', '=', $dataGetted['company_id']],
-            ];
-
-            if (isset($dataGetted['material_category_id']))
-                $where[] = ['materials.material_category_id', '=', $dataGetted['material_category_id']];
-
-            $material = Material::selectRaw('materials.*, IF(SUM(material_distributions.quantity_used) IS NOT NULL, SUM(material_distributions.quantity_used), 0) as quantity_used, IF((SUM(material_distributions.quantity_used) - SUM(material_distributions.quantity_bought)) IS NOT NULL, (SUM(material_distributions.quantity_bought) - SUM(material_distributions.quantity_used)), 0) AS remaining_quantity, IF(COUNT(material_distributions.id) > 0, 0, 1) AS can_exclude')
-            ->where($where)
-            ->leftJoin('material_distributions', 'materials.id', '=', 'material_distributions.material_id')
-            ->groupby('materials.id')
+            $materialCategory = MaterialCategory::selectRaw('material_categories.*, IF(COUNT(materials.id) > 0, 0, 1) AS can_exclude')
+            ->where([
+                ['material_categories.company_id', '=', $dataGetted['company_id']]
+            ])
+            ->leftJoin('materials', 'materials.material_category_id', '=', 'material_categories.id')
+            ->groupby('material_categories.id')
             ->get();
 
             return response()->json([
-                'message' => $material
+                'message' => $materialCategory
             ], 200);
         }
         catch (\Throwable $th)

@@ -6,26 +6,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Material extends Model
+class MaterialCategory extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'reference_code',
-        'company_id',
         'name',
-        'description',
-        'unit_of_measurement',
-        'material_category_id',
+        'company_id'
     ];
 
     /**
-     * Get all of the distributions for the Material
+     * Get all of the materials for the MaterialCategory
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function distributions(): HasMany
+    public function materials(): HasMany
     {
-        return $this->hasMany(MaterialDistribution::class, 'id', 'material_id');
+        return $this->hasMany(Material::class, 'material_category_id');
     }
 }

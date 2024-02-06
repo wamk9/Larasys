@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EquipmentController;
+use App\Http\Controllers\Api\MaterialCategoryController;
 use App\Http\Controllers\Api\MaterialController;
 use App\Http\Controllers\Api\MaterialDistributionController;
 use Illuminate\Http\Request;
@@ -36,6 +37,13 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/material-distribution/list', 'list')->name('api.material-distribution.list');
         Route::put('/material-distribution/update', 'update')->name('api.material-distribution.update');
         Route::delete('/material-distribution/delete', 'delete')->name('api.material-distribution.delete');
+    });
+
+    Route::controller(MaterialCategoryController::class)->group(function(){
+        //Route::post('/material-category/create', 'create')->name('api.material-category.create');
+        Route::get('/material-category/list', 'list')->name('api.material-category.list');
+        //Route::put('/material-category/update', 'update')->name('api.material-category.update');
+        //Route::delete('/material-category/delete', 'delete')->name('api.material-category.delete');
     });
 
     Route::controller(EquipmentController::class)->group(function(){
