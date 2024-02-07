@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('percent_profit')->unsigned();
             $table->float('price_reference', 10, 2, true);
 
-            $table->foreign('equipment_id')->references('id')->on('equipmnts');
+            $table->foreign('equipment_id')->references('id')->on('equipments');
             $table->foreign('stock_id')->references('id')->on('stocks');
         });
     }
